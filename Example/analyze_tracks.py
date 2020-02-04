@@ -32,12 +32,11 @@ def forwardProgress(df):
       if negativeStep and positiveStep: return False
   return True
 
-N_to_analyze = 5    # total number of events to analyze
+N_to_analyze = 100    # total number of events to analyze
 N_total = 0              # number of analyzed events
 N_good = 0               # number of good events
 N_backtracks = 0         # number of backtracks
 N_sparse = 0             # number of events with nHits < 3
-evt_nums = np.arange(2100, 2101)
 
 to_hist = pd.DataFrame({'pt' : [], 'dPhi' : [], 'dEta' : [], 
 			'dR' : [], 'len' : [], 'nHits' : []})
@@ -59,7 +58,7 @@ for evt_num in files:
     particle = particles[particles.particle_id == id]
     
     # basic pT cut
-    if (particle.iloc[0,:]['pt'] > 5): continue
+    if (particle.iloc[0,:]['pt'] < 5): continue
     
     truth_track = truth[truth.particle_id == id]
     layers_hit  = hits.loc[hits['hit_id'].isin(truth_track['hit_id'])]
