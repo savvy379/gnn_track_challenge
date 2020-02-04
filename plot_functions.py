@@ -65,7 +65,7 @@ def plotTrack(track):
         ax = plt.axes(projection='3d')
         ax.plot(track['tx'], track['ty'], track['tz'], lw=0.5, c='skyblue')
         ax.scatter3D(track['tx'], track['ty'], track['tz'], 
-                     c=track['tr'], cmap ='viridis', marker='h', s=30)
+                     c=track['tR'], cmap ='viridis', marker='h', s=30)
         ax.set_xlabel('x [mm]')
         ax.set_ylabel('y [mm]')
         ax.set_zlabel('z [mm]')

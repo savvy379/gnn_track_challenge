@@ -26,7 +26,6 @@ def getArgs():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-input", default="TrainEvents", type=str, help="Directory containing event files.")
 	parser.add_argument("-output", default="TrainEvents", type=str, help="Directory to write skimmed files.")
-	parser.add_argument
 	return parser.parse_args()
 
 def addDetectorCoords(df):
@@ -39,15 +38,6 @@ def addDetectorCoords(df):
 	df['phi']   = np.arctan2(df['py'], df['px']) # range [-pi, pi]
 	df.loc[df.phi < 0, 'phi'] += 2*np.pi # range [0, 2pi]
 	return df
-
-def forwardProgress(df):
-	""" forwardProgress(): 
-	"""
-   	radial_steps = df['tr'].diff().dropna()
-	for step in radial_steps:
-		if abs(step) > 10 and step > -0.0001:
-			return False
-	return True
 
 
 args = getArgs()
