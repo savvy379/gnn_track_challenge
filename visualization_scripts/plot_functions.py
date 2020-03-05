@@ -32,6 +32,13 @@ def plotSingleHist(data, x_label, y_label, bins, weights=None, title='', color='
     plt.title(title,    fontsize=16)
     plt.show()
 
+def plotXY(x, y, x_label, y_label, title='', color='blue'):
+    plt.scatter(x, y, c=color)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.show()
+    
 def plotBinnedHist(x, y, x_label, y_label, nbins, title='', color='blue'):
     """ plotBinnedHist(): generic function for plotting a binned y vs. x scatter plot
     					  similar to a TProfile
@@ -73,7 +80,7 @@ def plotTrack(track):
         plt.show()
 
 def getModuleCoords(v_id, l_id, m_id):
-    detectors = pd.read_csv('../detectors.csv')
+    detectors = pd.read_csv('../data/detectors.csv')
     coords = detectors[(detectors['volume_id'] == v_id) & (detectors['layer_id'] == l_id) 
                        & (detectors['module_id'] == m_id)]
     
@@ -106,7 +113,7 @@ def plotTrackOverLayers(track, hits, plotModules):
     """
     
     volume_ids = [7,8,9]
-    detectors = pd.read_csv('../detectors.csv')
+    detectors = pd.read_csv('../data/detectors.csv')
     detectors['xyz'] = detectors[['cx', 'cy', 'cz']].values.tolist()
     
     volumes = detectors.groupby('volume_id')['xyz'].apply(list).to_frame()	
@@ -152,7 +159,7 @@ def plotTrackOverLayers(track, hits, plotModules):
 
 def plotWholeDetector():
     volume_ids = [7,8,9]
-    detectors = pd.read_csv('../detectors.csv')
+    detectors = pd.read_csv('../data/detectors.csv')
     detectors['xyz'] = detectors[['cx', 'cy', 'cz']].values.tolist()
 
     volumes = detectors.groupby('volume_id')['xyz'].apply(list).to_frame()
