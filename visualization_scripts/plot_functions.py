@@ -8,7 +8,7 @@ __status__  = "Development"
 
 import os
 import math
-import trackml
+
 import numpy as np
 import pandas as pd
 from cycler import cycler
@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+import trackml
 from trackml.dataset import load_event
 from trackml.dataset import load_dataset
 
@@ -25,18 +26,32 @@ def plotSingleHist(data, x_label, y_label, bins, weights=None, title='', color='
     """
     bin_heights, bin_borders, _ = plt.hist(data, bins=bins, color=color, weights=weights)
     bin_centers = bin_borders[:-1] + np.diff(bin_borders)/2.
-    print bin_heights
-    print bin_centers
     plt.xlabel(x_label, fontsize=12)
     plt.ylabel(y_label, fontsize=12)
     plt.title(title,    fontsize=16)
     plt.show()
 
-def plotXY(x, y, x_label, y_label, title='', color='blue'):
-    plt.scatter(x, y, c=color)
+def plotXY(x, y, x_label, y_label, yerr = [], title='', color='blue', save=False):
+    """ generic function for scatter plotting
+    """
+    if (len(yerr) == 0): plt.scatter(x, y, c=color)
+    else: plt.errorbar(x, y, yerr=yerr, c=color, capsize=1, ls='', lw=1, marker='.')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.title(title)
+    if (save): plt.savefig(title+'.png', dpi=1200)
+    plt.show()
+
+def plotXYXY(x1, y1, label_1, x2, y2, label_2, x_label, y_label, yerr1 = [], yerr2 = [],
+             title='', color1='blue', color2 = 'seagreen', save=False):
+    """ generic function for scatter plotting two scatters
+    """
+    plt.errorbar(x1, y1, label=label_1, yerr=yerr1, c=color1, capsize=1, ls='', lw=1, marker='.')
+    plt.errorbar(x2, y2, label=label_2, yerr=yerr2, c=color2, capsize=1, ls='', lw=1, marker='.')
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.legend(loc="upper left")
+    if (save):
+        plt.savefig(title+'.png', dpi=1200)
     plt.show()
     
 def plotBinnedHist(x, y, x_label, y_label, nbins, title='', color='blue'):
@@ -67,18 +82,18 @@ def plotHeatMap(x, y, x_label, y_label, x_bins, y_bins, weights=None, title=''):
     plt.show()
 
 def plotTrack(track):
-	""" plotTrack(): plot a track in a simple 3D grid 
-	"""
-        fig = plt.figure()
-        ax = plt.axes(projection='3d')
-        ax.plot(track['tx'], track['ty'], track['tz'], lw=0.5, c='skyblue')
-        ax.scatter3D(track['tx'], track['ty'], track['tz'], 
-                     c=track['tR'], cmap ='viridis', marker='h', s=30)
-        ax.set_xlabel('x [mm]')
-        ax.set_ylabel('y [mm]')
-        ax.set_zlabel('z [mm]')
-        plt.show()
-
+    """ plotTrack(): plot a track in a simple 3D grid 
+    """
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.plot(track['tx'], track['ty'], track['tz'], lw=0.5, c='skyblue')
+    ax.scatter3D(track['tx'], track['ty'], track['tz'], 
+                 c=track['tR'], cmap ='viridis', marker='h', s=30)
+    ax.set_xlabel('x [mm]')
+    ax.set_ylabel('y [mm]')
+    ax.set_zlabel('z [mm]')
+    plt.show()
+    
 def getModuleCoords(v_id, l_id, m_id):
     detectors = pd.read_csv('../data/detectors.csv')
     coords = detectors[(detectors['volume_id'] == v_id) & (detectors['layer_id'] == l_id) 
@@ -186,10 +201,9 @@ def plotWholeDetector():
     ax.set_zlabel('z [mm]')
 
     
-    pixel_detector = detectors[detectors.volume_id.isin([7,8,9])]
-    #pixel_detector = pixel_detector[pixel_detector.layer_id.isin([8])]
+    #pixel_detector = detectors[detectors.volume_id.isin([7,8,9])]
+    pixel_detector = pixel_detector[pixel_detector.layer_id.isin([8])]
     for index, row in pixel_detector.iterrows():
-        print "looking at", index
         verts = getModuleCoords(row['volume_id'], row['layer_id'], row['module_id'])
         ax.add_collection3d(Poly3DCollection(verts, facecolors='silver', linewidths=1, edgecolor='black'), zs='z')
 
